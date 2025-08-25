@@ -111,3 +111,9 @@ tree.pack(fill="both", expand=True)
 scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=scrollbar.set)
 scrollbar.pack(side="right", fill="y")
+
+# Atualiza a tabela na inicialização
+atualizar_lista()
+
+# Mantém a janela aberta
+root.mainloop()
