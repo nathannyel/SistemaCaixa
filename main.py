@@ -2,7 +2,33 @@ import tkinter as tk
 from tkinter import messagebox
 from banco import criar_tabela, adicionar_movimentacao, listar_movimentacoes
 from datetime import datetime
-from tkinter import ttk
+from tkinter import ttk, messagebox
+
+# ---------------- JANELA PRINCIPAL ----------------
+root = tk.Tk()
+root.title("Sistema de Caixa")
+root.geometry("720x480")
+root.configure(bg="#f7f9fc")
+
+# Configuração de estilo
+style = ttk.Style()
+root.configure(bg="#f4f6f9") # Cor do fundo da janela
+
+style.theme_use("clam") # deixa os weights mais modernos
+
+# Estilo da Treeview (tabela)
+style.configure(
+    "Treeview",
+    background="white",
+    foreground="black",
+    rowheight=25,
+    fieldbackground="white",
+    font=("Aeial", 11)
+    )
+style.configure("Treeview.Heading", font=("Arial", 11, "bold"))
+    
+# Linhas alternadas (efeito zebra)
+style.map("Treeview", background=[("selected", "#1976d2")], foreground=[("selected", "white")])
 
 # Criar tabela ao iniciar
 criar_tabela()
@@ -39,15 +65,9 @@ def atualizar_lista():
             _, tipo, valor, descricao, data = mov
             tree.insert("", "end", values=(tipo, f"{valor:.2f}", descricao, data))
 
-# ---------------- JANELA PRINCIPAL ----------------
-root = tk.Tk()
-root.title("Sistema de Caixa")
-root.geometry("720x480")
-root.configure(bg="#f7f9fc")
-
 # ---------- FRAME SUPERIOR (formulário) ----------
 top = tk.Frame(root, bg="#f7f9fc", padx=12, pady=12)
-top.pack(fill="x")
+top.grid(row=0, column=0, sticky="ew")
 
 # Tipo
 tk.Label(top, text="Tipo:", bg="#f7f9fc", font=("Segoe UI", 11)).grid(row=0, column=0, sticky="w")
@@ -55,6 +75,8 @@ tipo_var = tk.StringVar(value="Entrada")
 tipo_menu = tk.OptionMenu(top, tipo_var, "Entrada", "Saída")
 tipo_menu.config(font=("Segoe UI", 11))
 tipo_menu.grid(row=0, column=1, sticky="we", padx=(6, 12))
+btn_salvar = ttk.Button(root, text="Salvar", command=salvar)
+btn_salvar.grid(row=0, column=3, padx=10, pady=5, sticky="nsew")
 
 # Valor
 tk.Label(top, text="Valor:", bg="#f7f9fc", font=("Segoe UI", 11)).grid(row=0, column=2, sticky="w")
@@ -77,15 +99,19 @@ salvar_btn = tk.Button(
     padx=14, pady=8,
     font=("Segoe UI", 11, "bold")
 )
-salvar_btn.grid(row=0, column=4, rowspan=2, sticky="nswe")
+#salvar_btn.grid(row=0, column=4, rowspan=2, sticky="nswe", padx=8)
 
 # Faz as colunas do formulário expandirem
 for col in range(0, 4):
-    top.grid_columnconfigure(col, weight=1)
+    top.grid_columnconfigure(3, weight=1)
 
 # ---------- FRAME INFERIOR (lista como tabela) ----------
 list_frame = tk.Frame(root, bg="#ffffff", padx=12, pady=12)
-list_frame.pack(fill="both", expand=True)
+list_frame.grid(row=1, column=0, sticky="nsew")
+
+# Permite que os frames cresçam junto com a janela
+root.grid_rowconfigure(1, weight=1)
+root.grid_columnconfigure(0, weight=1)
 
 tk.Label(list_frame, text="Movimentações", bg="#ffffff", font=("Segoe UI", 12, "bold")).pack(anchor="w", pady=(0, 6))
 
